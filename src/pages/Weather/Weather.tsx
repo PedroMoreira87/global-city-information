@@ -32,9 +32,13 @@ const Weather = () => {
       );
       setCityData(cityResponse.data);
       toast.success(`Cities found for "${cityInput}"!`);
-    } catch (error: any) {
-      console.log(error);
-      toast.error(`Failed to find cities: ${error.message}`);
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        console.log(error);
+        toast.error(`Failed to find cities: ${error.message}`);
+      } else {
+        console.error('Unexpected error', error);
+      }
     }
   };
 
@@ -48,9 +52,13 @@ const Weather = () => {
       );
       setWeatherData(weatherResponse.data);
       toast.success(`Weather data loaded successfully for ${selectedCity.name}!`);
-    } catch (error: any) {
-      console.log(error);
-      toast.error(`Failed to load weather data: ${error.message}`);
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        console.log(error);
+        toast.error(`Failed to load weather data: ${error.message}`);
+      } else {
+        console.error('Unexpected error', error);
+      }
     }
   };
 
