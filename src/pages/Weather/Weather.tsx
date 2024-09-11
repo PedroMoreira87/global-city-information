@@ -78,12 +78,12 @@ const Weather = () => {
       </div>
       {cityData.length > 0 && (
         <div className="weather__places-found">
-          <Box sx={{ width: 320 }}>
+          <Box sx={{ width: 331.75 }}>
             <FormControl fullWidth>
-              <InputLabel id="demo-simple-select-label">Places Found</InputLabel>
+              <InputLabel id="places-found-label">Places Found</InputLabel>
               <Select
-                labelId="demo-simple-select-label"
-                id="demo-simple-select"
+                labelId="places-found-label"
+                id="places-found"
                 value={placesFoundSelect ? JSON.stringify(placesFoundSelect) : ''}
                 label="Places Found"
                 onChange={handleSelectChange}
