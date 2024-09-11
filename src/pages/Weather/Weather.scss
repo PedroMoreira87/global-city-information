@@ -1,0 +1,30 @@
+.weather {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  gap: 1rem;
+
+  &__inputs {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    gap: 1rem;
+  }
+
+  &__places-found {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  &__data {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #2c3e50;
+  }
+}
