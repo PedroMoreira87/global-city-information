@@ -12,7 +12,6 @@ import {
 import { useState } from 'react';
 import './Weather.scss';
 import toast from 'react-hot-toast';
-import { saveCity } from './weather.service.ts';
 import { City } from '../../interfaces/city.interface.ts';
 import { WeatherData } from '../../interfaces/weather.interface.ts';
 import MapWithGeocoding from '../MapWithGeocoding/MapWithGeocoding.tsx';
@@ -48,7 +47,6 @@ const Weather = () => {
         `https://api.openweathermap.org/data/3.0/onecall?lat=${selectedCity.lat}&lon=${selectedCity.lon}&units=metric&appid=${OpenWeatherMapAPIKey}`,
       );
       setWeatherData(weatherResponse.data);
-      saveCity(selectedCity as unknown as City);
       toast.success(`Weather data loaded successfully for ${selectedCity.name}!`);
     } catch (error: any) {
       console.log(error);
