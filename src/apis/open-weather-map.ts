@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const OpenWeatherMapAPIKey = import.meta.env.VITE_OPENWEATHERMAPAPIKEY;
+const OpenWeatherMapAPIKey = import.meta.env.VITE_OPEN_WEATHER_MAP_API_KEY;
 
 export const geoLocation = async (cityInput: string) => {
   return await axios.get(
