@@ -1,4 +1,3 @@
-import axios from 'axios';
 import {
   Box,
   Button,
@@ -9,12 +8,14 @@ import {
   SelectChangeEvent,
   TextField,
 } from '@mui/material';
+import axios from 'axios';
 import { useState } from 'react';
-import './Weather.scss';
 import toast from 'react-hot-toast';
+
 import { City } from '../../interfaces/city.interface.ts';
 import { WeatherData } from '../../interfaces/weather.interface.ts';
 import MapWithGeocoding from '../MapWithGeocoding/MapWithGeocoding.tsx';
+import './Weather.scss';
 
 const OpenWeatherMapAPIKey = import.meta.env.VITE_OPENWEATHERMAPAPIKEY;
 
