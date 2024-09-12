@@ -8,31 +8,31 @@ import {
   SelectChangeEvent,
   TextField,
 } from '@mui/material';
-import axios from 'axios';
 import { useState } from 'react';
 import toast from 'react-hot-toast';
 
+import { geoLocation, weatherData } from '../../apis/open-weather-map.ts';
 import { City } from '../../interfaces/city.interface.ts';
 import { WeatherData } from '../../interfaces/weather.interface.ts';
-import MapWithGeocoding from '../MapWithGeocoding/MapWithGeocoding.tsx';
+import MapWithGeocoding from './MapWithGeocoding/MapWithGeocoding.tsx';
 import './Weather.scss';
 
-const OpenWeatherMapAPIKey = import.meta.env.VITE_OPENWEATHERMAPAPIKEY;
-
 const Weather = () => {
-  const [weatherData, setWeatherData] = useState<WeatherData | undefined>(undefined);
-  const [cityData, setCityData] = useState<City[]>([]);
+  const [weather, setWeather] = useState<WeatherData | undefined>(undefined);
+  const [city, setCity] = useState<City[]>([]);
   const [cityInput, setCityInput] = useState('');
   const [placesFoundSelect, setPlacesFoundSelect] = useState<City | null>(null);
   const [cityCoordinates, setCityCoordinates] = useState<{ lat: number; lng: number } | null>(null);
 
   const handleButtonSearch = async () => {
     try {
-      const cityResponse = await axios.get(
-        `http://api.openweathermap.org/geo/1.0/direct?q=${cityInput}&limit=5&appid=${OpenWeatherMapAPIKey}`,
-      );
-      setCityData(cityResponse.data);
-      toast.success(`Cities found for "${cityInput}"!`);
+      const cityResponse = await geoLocation(cityInput);
+      if (cityResponse.data.length > 0) {
+        setCity(cityResponse.data);
+        toast.success(`Cities found for "${cityInput}"!`);
+      } else {
+        toast.error(`No cities were found for "${cityInput}"!`);
+      }
     } catch (error: unknown) {
       if (error instanceof Error) {
         console.log(error);
@@ -48,10 +48,8 @@ const Weather = () => {
     setPlacesFoundSelect(selectedCity);
     setCityCoordinates({ lat: selectedCity.lat, lng: selectedCity.lon });
     try {
-      const weatherResponse = await axios.get(
-        `https://api.openweathermap.org/data/3.0/onecall?lat=${selectedCity.lat}&lon=${selectedCity.lon}&units=metric&appid=${OpenWeatherMapAPIKey}`,
-      );
-      setWeatherData(weatherResponse.data);
+      const weatherResponse = await weatherData(selectedCity.lat, selectedCity.lon);
+      setWeather(weatherResponse.data);
       toast.success(`Weather data loaded successfully for ${selectedCity.name}!`);
     } catch (error: unknown) {
       if (error instanceof Error) {
@@ -77,7 +75,7 @@ const Weather = () => {
           Search
         </Button>
       </div>
-      {cityData.length > 0 && (
+      {city.length > 0 && (
         <div className="weather__places-found">
           <Box sx={{ width: 331.75 }}>
             <FormControl fullWidth>
@@ -90,7 +88,7 @@ const Weather = () => {
                 onChange={handleSelectChange}
                 variant="outlined"
               >
-                {cityData?.map((city, index) => (
+                {city?.map((city, index) => (
                   <MenuItem key={index} value={JSON.stringify(city)}>
                     {city.name}, {city.state}, {city.country}
                   </MenuItem>
@@ -107,10 +105,10 @@ const Weather = () => {
               Weather in {placesFoundSelect.name}, {placesFoundSelect.state},{' '}
               {placesFoundSelect.country}
             </span>
-            <span>Temperature: {weatherData?.current.temp}°C</span>
-            <span>Feels Like: {weatherData?.current.feels_like}°C</span>
-            <span>Condition: {weatherData?.current.weather[0].description}</span>
-            <span>Humidity: {weatherData?.current.humidity}%</span>
+            <span>Temperature: {weather?.current.temp}°C</span>
+            <span>Feels Like: {weather?.current.feels_like}°C</span>
+            <span>Condition: {weather?.current.weather[0].description}</span>
+            <span>Humidity: {weather?.current.humidity}%</span>
           </div>
           <MapWithGeocoding cityCoordinates={cityCoordinates} />
         </>

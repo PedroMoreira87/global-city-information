@@ -5,7 +5,7 @@ import Home from './pages/Home/Home.tsx';
 function App() {
   return (
     <div>
-      <Toaster />
+      <Toaster position="top-right" reverseOrder={false} />
       <Home />
     </div>
   );
