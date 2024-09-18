@@ -1,19 +1,10 @@
-import {
-  Box,
-  Button,
-  FormControl,
-  InputLabel,
-  MenuItem,
-  Select,
-  SelectChangeEvent,
-  TextField,
-} from '@mui/material';
+import { Box, Button, FormControl, InputLabel, MenuItem, Select, SelectChangeEvent, TextField } from '@mui/material';
 import { useState } from 'react';
 import toast from 'react-hot-toast';
 
-import { geoLocation, weatherData } from '../../apis/aws-lambda-functions.ts';
-import { City } from '../../interfaces/city.interface.ts';
-import { WeatherData } from '../../interfaces/weather.interface.ts';
+import { geoLocation, weatherData } from '../../../apis/aws-lambda-functions.ts';
+import { City } from '../../../interfaces/city.interface.ts';
+import { WeatherData } from '../../../interfaces/weather.interface.ts';
 import MapWithGeocoding from './MapWithGeocoding/MapWithGeocoding.tsx';
 import './Weather.scss';
 
@@ -102,8 +93,7 @@ const Weather = () => {
         <>
           <div className="weather__data">
             <span>
-              Weather in {placesFoundSelect.name}, {placesFoundSelect.state},{' '}
-              {placesFoundSelect.country}
+              Weather in {placesFoundSelect.name}, {placesFoundSelect.state}, {placesFoundSelect.country}
             </span>
             <span>Temperature: {weather?.current.temp}°C</span>
             <span>Feels Like: {weather?.current.feels_like}°C</span>

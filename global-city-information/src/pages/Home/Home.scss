@@ -1,9 +1,19 @@
 .home {
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  gap: 1rem;
-  min-width: 100vw;
+  justify-content: start;
   min-height: 100vh;
   background-color: #ADD8E6FF;
+
+  &__content {
+    display: flex;
+    flex-direction: column;
+    justify-content: start;
+    align-items: end;
+    gap: 6rem;
+  }
+
+  &__button {
+    margin: 1rem 1rem 0 0;
+  }
 }
