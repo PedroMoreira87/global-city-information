@@ -24,7 +24,7 @@ const MapWithGeocoding = ({ cityCoordinates }: MapWithGeocodingProps) => {
   }
 
   return (
-    <div className="mapWithGeocoding">
+    <div className="map-with-geocoding">
       <LoadScript googleMapsApiKey={GoogleMapsAPIKey}>
         <GoogleMap mapContainerStyle={mapContainerStyle} center={cityCoordinates} zoom={12}>
           <Marker position={cityCoordinates} />

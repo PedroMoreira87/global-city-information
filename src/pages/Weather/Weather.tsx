@@ -11,7 +11,7 @@ import {
 import { useState } from 'react';
 import toast from 'react-hot-toast';
 
-import { geoLocation, weatherData } from '../../apis/open-weather-map.ts';
+import { geoLocation, weatherData } from '../../apis/aws-lambda-functions.ts';
 import { City } from '../../interfaces/city.interface.ts';
 import { WeatherData } from '../../interfaces/weather.interface.ts';
 import MapWithGeocoding from './MapWithGeocoding/MapWithGeocoding.tsx';
@@ -27,8 +27,8 @@ const Weather = () => {
   const handleButtonSearch = async () => {
     try {
       const cityResponse = await geoLocation(cityInput);
-      if (cityResponse.data.length > 0) {
-        setCity(cityResponse.data);
+      if (cityResponse.length > 0) {
+        setCity(cityResponse);
         toast.success(`Cities found for "${cityInput}"!`);
       } else {
         toast.error(`No cities were found for "${cityInput}"!`);
@@ -49,7 +49,7 @@ const Weather = () => {
     setCityCoordinates({ lat: selectedCity.lat, lng: selectedCity.lon });
     try {
       const weatherResponse = await weatherData(selectedCity.lat, selectedCity.lon);
-      setWeather(weatherResponse.data);
+      setWeather(weatherResponse);
       toast.success(`Weather data loaded successfully for ${selectedCity.name}!`);
     } catch (error: unknown) {
       if (error instanceof Error) {
