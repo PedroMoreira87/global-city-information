@@ -5,7 +5,7 @@ import { Toaster } from 'react-hot-toast';
 
 import './App.scss';
 import { awsConfig } from './config/aws-config.ts';
-import Home from './pages/Home/Home.tsx';
+import Home from './pages/home/Home.tsx';
 
 Amplify.configure({
   Auth: {
@@ -17,6 +17,7 @@ Amplify.configure({
 });
 
 function App() {
+  //TODO Set lambda functions to use the correct domain => "Access-Control-Allow-Origin": "*",
   return (
     <Authenticator className="app" signUpAttributes={['name']}>
       {() => (

@@ -2,7 +2,14 @@ import axios from 'axios';
 
 export const handler = async (event) => {
   try {
-    const { cityInput } = event.body;
+    const parsedBody = event.body ? JSON.parse(event.body) : {};
+    const { cityInput } = parsedBody;
+    if (!cityInput) {
+      return {
+        statusCode: 400,
+        body: JSON.stringify({ error: 'cityInput is required' }),
+      };
+    }
     const apiKey = process.env.OPEN_WEATHER_API_KEY;
     if (!apiKey) {
       throw new Error('OpenWeatherMap API key is not configured');
@@ -12,17 +19,17 @@ export const handler = async (event) => {
     return {
       statusCode: 200,
       headers: {
-        "Access-Control-Allow-Headers" : "Content-Type",
-        "Access-Control-Allow-Origin": "*",
-        "Access-Control-Allow-Methods": "OPTIONS,POST,GET"
+        'Access-Control-Allow-Headers': 'Content-Type',
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Methods': 'OPTIONS,POST,GET',
       },
-      body: response.data,
+      body: JSON.stringify(response.data),
     };
   } catch (error) {
     console.error('Error fetching city data from OpenWeatherMap:', error.message);
     return {
       statusCode: 500,
-      body: { error: 'Failed to fetch city data' },
+      body: JSON.stringify({ error: 'Failed to fetch city data' }),
     };
   }
 };

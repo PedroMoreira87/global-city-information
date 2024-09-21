@@ -3,7 +3,7 @@ import { signOut } from 'aws-amplify/auth';
 import toast from 'react-hot-toast';
 
 import './Home.scss';
-import Weather from './Weather/Weather.tsx';
+import Weather from './weather/Weather.tsx';
 
 const Home = () => {
   const handleSignOut = async () => {

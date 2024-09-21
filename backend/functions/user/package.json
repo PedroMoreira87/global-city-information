@@ -1,5 +1,5 @@
 {
-  "name": "geo-location",
+  "name": "user",
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
@@ -10,6 +10,7 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
-    "axios": "^1.7.7"
+    "@aws-sdk/client-dynamodb": "^3.654.0",
+    "@aws-sdk/lib-dynamodb": "^3.654.0"
   }
 }

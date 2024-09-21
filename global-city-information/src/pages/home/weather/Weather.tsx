@@ -1,14 +1,17 @@
+import { useAuthenticator } from '@aws-amplify/ui-react';
 import { Box, Button, FormControl, InputLabel, MenuItem, Select, SelectChangeEvent, TextField } from '@mui/material';
 import { useState } from 'react';
 import toast from 'react-hot-toast';
 
-import { geoLocation, weatherData } from '../../../apis/aws-lambda-functions.ts';
+import { geolocation, updateUser, weatherData } from '../../../apis/aws-lambda-functions.ts';
 import { City } from '../../../interfaces/city.interface.ts';
+import { Place, UserWeather } from '../../../interfaces/user.interface.ts';
 import { WeatherData } from '../../../interfaces/weather.interface.ts';
-import MapWithGeocoding from './MapWithGeocoding/MapWithGeocoding.tsx';
+import MapWithGeocoding from './mapWithGeocoding/MapWithGeocoding.tsx';
 import './Weather.scss';
 
 const Weather = () => {
+  const { user } = useAuthenticator();
   const [weather, setWeather] = useState<WeatherData | undefined>(undefined);
   const [city, setCity] = useState<City[]>([]);
   const [cityInput, setCityInput] = useState('');
@@ -17,7 +20,7 @@ const Weather = () => {
 
   const handleButtonSearch = async () => {
     try {
-      const cityResponse = await geoLocation(cityInput);
+      const cityResponse = await geolocation(cityInput);
       if (cityResponse.length > 0) {
         setCity(cityResponse);
         toast.success(`Cities found for "${cityInput}"!`);
@@ -46,6 +49,33 @@ const Weather = () => {
       if (error instanceof Error) {
         console.log(error);
         toast.error(`Failed to load weather data: ${error.message}`);
+      } else {
+        console.error('Unexpected error', error);
+      }
+    }
+  };
+
+  const handleSaveButton = async () => {
+    const place: Place = {
+      city: placesFoundSelect!.name,
+      state: placesFoundSelect!.state,
+      country: placesFoundSelect!.country,
+    };
+    const userWeather: UserWeather = {
+      place: place,
+      temperature: weather!.current.temp,
+      feelsLike: weather!.current.feels_like,
+      description: weather!.current.weather[0].description,
+      humidity: weather!.current.humidity,
+      latitude: weather!.lat,
+      longitude: weather!.lon,
+    };
+    try {
+      await updateUser(user.userId, userWeather);
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        console.log(error);
+        toast.error(`Failed to update user data: ${error.message}`);
       } else {
         console.error('Unexpected error', error);
       }
@@ -87,6 +117,11 @@ const Weather = () => {
               </Select>
             </FormControl>
           </Box>
+          {weather && (
+            <Button variant="contained" onClick={handleSaveButton}>
+              Save
+            </Button>
+          )}
         </div>
       )}
       {placesFoundSelect && (
