@@ -71,14 +71,14 @@ const Home = () => {
                 <TableRow>
                   <TableCell>City</TableCell>
                   <TableCell align="right">State</TableCell>
-                  <TableCell align="right">Country&nbsp;(g)</TableCell>
-                  <TableCell align="right">Temperature&nbsp;(g)</TableCell>
-                  <TableCell align="right">FeelsLike&nbsp;(g)</TableCell>
-                  <TableCell align="right">Description&nbsp;(g)</TableCell>
-                  <TableCell align="right">Humidity&nbsp;(g)</TableCell>
-                  <TableCell align="right">Latitude&nbsp;(g)</TableCell>
-                  <TableCell align="right">Longitude&nbsp;(g)</TableCell>
-                  <TableCell align="right">Created At&nbsp;(g)</TableCell>
+                  <TableCell align="right">Country&nbsp;</TableCell>
+                  <TableCell align="right">Temperature&nbsp;</TableCell>
+                  <TableCell align="right">FeelsLike&nbsp;</TableCell>
+                  <TableCell align="right">Description&nbsp;</TableCell>
+                  <TableCell align="right">Humidity&nbsp;</TableCell>
+                  <TableCell align="right">Latitude&nbsp;</TableCell>
+                  <TableCell align="right">Longitude&nbsp;</TableCell>
+                  <TableCell align="right">Created At&nbsp;</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
@@ -89,10 +89,10 @@ const Home = () => {
                     </TableCell>
                     <TableCell align="right">{row.place.state}</TableCell>
                     <TableCell align="right">{row.place.country}</TableCell>
-                    <TableCell align="right">{row.temperature}</TableCell>
-                    <TableCell align="right">{row.feelsLike}</TableCell>
+                    <TableCell align="right">{row.temperature}°C</TableCell>
+                    <TableCell align="right">{row.feelsLike}°C</TableCell>
                     <TableCell align="right">{row.description}</TableCell>
-                    <TableCell align="right">{row.humidity}</TableCell>
+                    <TableCell align="right">{row.humidity}%</TableCell>
                     <TableCell align="right">{row.latitude}</TableCell>
                     <TableCell align="right">{row.longitude}</TableCell>
                     <TableCell align="right">{new Date(row.created_at!).toISOString().split('T')[0]}</TableCell>
