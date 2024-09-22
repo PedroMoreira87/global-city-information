@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-import { UserWeather } from '../interfaces/user.interface.ts';
+import { IWeather } from '../interfaces/user.interface.ts';
 
 export const geolocation = async (cityInput: string) => {
   const response = await axios.post('https://yzl2gp4vz5.execute-api.us-east-1.amazonaws.com/dev/geolocations', {
@@ -17,10 +17,15 @@ export const weatherData = async (selectedCityLat: number, selectedCityLon: numb
   return response.data;
 };
 
-export const updateUser = async (userId: string, userWeather: UserWeather) => {
+export const updateUser = async (userId: string, userWeather: IWeather) => {
   const response = await axios.put(
     `https://yzl2gp4vz5.execute-api.us-east-1.amazonaws.com/dev/users/${userId}`,
     userWeather,
   );
+  return response.data;
+};
+
+export const getUser = async (userId: string) => {
+  const response = await axios.get(`https://yzl2gp4vz5.execute-api.us-east-1.amazonaws.com/dev/users/${userId}`);
   return response.data;
 };

@@ -1,4 +1,12 @@
-export interface UserWeather {
+export interface User {
+  id: string;
+  name: string;
+  email: string;
+  weather: IWeather[];
+  created_at?: Date;
+}
+
+export interface IWeather {
   place: Place;
   temperature: number;
   feelsLike: number;
@@ -6,6 +14,7 @@ export interface UserWeather {
   humidity: number;
   latitude: number;
   longitude: number;
+  created_at?: Date;
 }
 
 export interface Place {

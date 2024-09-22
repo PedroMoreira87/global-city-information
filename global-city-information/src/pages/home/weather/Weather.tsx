@@ -1,19 +1,23 @@
 import { useAuthenticator } from '@aws-amplify/ui-react';
 import { Box, Button, FormControl, InputLabel, MenuItem, Select, SelectChangeEvent, TextField } from '@mui/material';
-import { useState } from 'react';
+import React, { useState } from 'react';
 import toast from 'react-hot-toast';
 
-import { geolocation, updateUser, weatherData } from '../../../apis/aws-lambda-functions.ts';
+import { geolocation, getUser, updateUser, weatherData } from '../../../apis/aws-lambda-functions.ts';
 import { City } from '../../../interfaces/city.interface.ts';
-import { Place, UserWeather } from '../../../interfaces/user.interface.ts';
-import { WeatherData } from '../../../interfaces/weather.interface.ts';
+import { Place, IWeather, User } from '../../../interfaces/user.interface.ts';
+import { WeatherAPI } from '../../../interfaces/weather-api.interface.ts';
 import MapWithGeocoding from './mapWithGeocoding/MapWithGeocoding.tsx';
 import './Weather.scss';
 
-const Weather = () => {
+interface WeatherProps {
+  onUserDataUpdate: (updatedUserData: User) => void;
+}
+
+const Weather: React.FC<WeatherProps> = ({ onUserDataUpdate }) => {
   const { user } = useAuthenticator();
-  const [weather, setWeather] = useState<WeatherData | undefined>(undefined);
-  const [city, setCity] = useState<City[]>([]);
+  const [weatherAPI, setWeatherAPI] = useState<WeatherAPI | undefined>(undefined);
+  const [cityAPI, setCityAPI] = useState<City[]>([]);
   const [cityInput, setCityInput] = useState('');
   const [placesFoundSelect, setPlacesFoundSelect] = useState<City | null>(null);
   const [cityCoordinates, setCityCoordinates] = useState<{ lat: number; lng: number } | null>(null);
@@ -22,7 +26,7 @@ const Weather = () => {
     try {
       const cityResponse = await geolocation(cityInput);
       if (cityResponse.length > 0) {
-        setCity(cityResponse);
+        setCityAPI(cityResponse);
         toast.success(`Cities found for "${cityInput}"!`);
       } else {
         toast.error(`No cities were found for "${cityInput}"!`);
@@ -43,7 +47,7 @@ const Weather = () => {
     setCityCoordinates({ lat: selectedCity.lat, lng: selectedCity.lon });
     try {
       const weatherResponse = await weatherData(selectedCity.lat, selectedCity.lon);
-      setWeather(weatherResponse);
+      setWeatherAPI(weatherResponse);
       toast.success(`Weather data loaded successfully for ${selectedCity.name}!`);
     } catch (error: unknown) {
       if (error instanceof Error) {
@@ -61,17 +65,19 @@ const Weather = () => {
       state: placesFoundSelect!.state,
       country: placesFoundSelect!.country,
     };
-    const userWeather: UserWeather = {
+    const userWeather: IWeather = {
       place: place,
-      temperature: weather!.current.temp,
-      feelsLike: weather!.current.feels_like,
-      description: weather!.current.weather[0].description,
-      humidity: weather!.current.humidity,
-      latitude: weather!.lat,
-      longitude: weather!.lon,
+      temperature: weatherAPI!.current.temp,
+      feelsLike: weatherAPI!.current.feels_like,
+      description: weatherAPI!.current.weather[0].description,
+      humidity: weatherAPI!.current.humidity,
+      latitude: weatherAPI!.lat,
+      longitude: weatherAPI!.lon,
     };
     try {
       await updateUser(user.userId, userWeather);
+      const userData = await getUser(user.userId);
+      onUserDataUpdate(userData);
     } catch (error: unknown) {
       if (error instanceof Error) {
         console.log(error);
@@ -96,7 +102,7 @@ const Weather = () => {
           Search
         </Button>
       </div>
-      {city.length > 0 && (
+      {cityAPI.length > 0 && (
         <div className="weather__places-found">
           <Box sx={{ width: 331.75 }}>
             <FormControl fullWidth>
@@ -109,7 +115,7 @@ const Weather = () => {
                 onChange={handleSelectChange}
                 variant="outlined"
               >
-                {city?.map((city, index) => (
+                {cityAPI?.map((city, index) => (
                   <MenuItem key={index} value={JSON.stringify(city)}>
                     {city.name}, {city.state}, {city.country}
                   </MenuItem>
@@ -117,9 +123,9 @@ const Weather = () => {
               </Select>
             </FormControl>
           </Box>
-          {weather && (
+          {weatherAPI && (
             <Button variant="contained" onClick={handleSaveButton}>
-              Save
+              Save Data
             </Button>
           )}
         </div>
@@ -130,10 +136,10 @@ const Weather = () => {
             <span>
               Weather in {placesFoundSelect.name}, {placesFoundSelect.state}, {placesFoundSelect.country}
             </span>
-            <span>Temperature: {weather?.current.temp}°C</span>
-            <span>Feels Like: {weather?.current.feels_like}°C</span>
-            <span>Condition: {weather?.current.weather[0].description}</span>
-            <span>Humidity: {weather?.current.humidity}%</span>
+            <span>Temperature: {weatherAPI?.current.temp}°C</span>
+            <span>Feels Like: {weatherAPI?.current.feels_like}°C</span>
+            <span>Condition: {weatherAPI?.current.weather[0].description}</span>
+            <span>Humidity: {weatherAPI?.current.humidity}%</span>
           </div>
           <MapWithGeocoding cityCoordinates={cityCoordinates} />
         </>

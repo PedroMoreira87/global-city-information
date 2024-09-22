@@ -15,13 +15,13 @@ export const handler = async (event) => {
       }
       break;
     case 'GET':
-      if (path === '/users' && pathParameters && pathParameters.id) {
+      if (pathParameters && pathParameters.id && path.startsWith('/users')) {
         return await getUser(pathParameters.id);
       } else {
         return await getAllUsers();
       }
     case 'DELETE':
-      if (pathParameters && pathParameters.id) {
+      if (pathParameters && pathParameters.id && path.startsWith('/users')) {
         return await deleteUser(pathParameters.id);
       }
       break;
@@ -51,7 +51,7 @@ const getUser = async (id) => {
           'Access-Control-Allow-Origin': '*',
           'Access-Control-Allow-Methods': 'OPTIONS,POST,GET,PUT,DELETE',
         },
-        body: data.Item,
+        body: JSON.stringify(data.Item),
       };
     } else {
       return {
@@ -80,7 +80,7 @@ const getAllUsers = async () => {
           'Access-Control-Allow-Origin': '*',
           'Access-Control-Allow-Methods': 'OPTIONS,POST,GET,PUT,DELETE',
         },
-        body: data.Items,
+        body: JSON.stringify(data.Items),
       };
     } else {
       return {
@@ -100,32 +100,35 @@ const getAllUsers = async () => {
 const updateUser = async (id, data) => {
   const weather = data;
   const {
+    place,
     temperature,
     feelsLike,
     description,
     humidity,
     latitude,
     longitude,
-    place,
   } = weather;
-
   if (
+    !place ||
+    place.city === undefined ||
+    place.state === undefined ||
+    place.country === undefined ||
     temperature === undefined ||
     feelsLike === undefined ||
     description === undefined ||
     humidity === undefined ||
     latitude === undefined ||
-    longitude === undefined ||
-    !place ||
-    place.city === undefined ||
-    place.state === undefined ||
-    place.country === undefined
+    longitude === undefined
   ) {
     return {
       statusCode: 400,
       body: JSON.stringify({ message: 'All Weather attributes must be provided.' }),
     };
   }
+  const weatherWithTimestamp = {
+    ...weather,
+    created_at: new Date().toISOString(),
+  };
   const params = {
     TableName: tableName,
     Key: { id },
@@ -135,7 +138,7 @@ const updateUser = async (id, data) => {
       '#weather': 'weather',
     },
     ExpressionAttributeValues: {
-      ':new_weather': [weather],
+      ':new_weather': [weatherWithTimestamp],
       ':empty_list': [],
     },
     ReturnValues: 'UPDATED_NEW',
