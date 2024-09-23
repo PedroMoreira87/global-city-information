@@ -7,10 +7,6 @@ export const handler = async (event) => {
     if (selectedCityLat === undefined || selectedCityLon === undefined) {
       return {
         statusCode: 400,
-        headers: {
-          'Content-Type': 'application/json',
-          'Access-Control-Allow-Origin': '*',
-        },
         body: JSON.stringify({ error: 'selectedCityLat and selectedCityLon are required' }),
       };
     }
@@ -24,7 +20,7 @@ export const handler = async (event) => {
       statusCode: 200,
       headers: {
         'Access-Control-Allow-Headers': 'Content-Type',
-        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Origin': 'https://globalcityinformation.org',
         'Access-Control-Allow-Methods': 'OPTIONS,POST,GET',
       },
       body: JSON.stringify(response.data),

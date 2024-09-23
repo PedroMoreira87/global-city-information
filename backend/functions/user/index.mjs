@@ -48,7 +48,7 @@ const getUser = async (id) => {
         statusCode: 200,
         headers: {
           'Access-Control-Allow-Headers': 'Content-Type',
-          'Access-Control-Allow-Origin': '*',
+          'Access-Control-Allow-Origin': 'https://globalcityinformation.org',
           'Access-Control-Allow-Methods': 'OPTIONS,POST,GET,PUT,DELETE',
         },
         body: JSON.stringify(data.Item),
@@ -77,7 +77,7 @@ const getAllUsers = async () => {
         statusCode: 200,
         headers: {
           'Access-Control-Allow-Headers': 'Content-Type',
-          'Access-Control-Allow-Origin': '*',
+          'Access-Control-Allow-Origin': 'https://globalcityinformation.org',
           'Access-Control-Allow-Methods': 'OPTIONS,POST,GET,PUT,DELETE',
         },
         body: JSON.stringify(data.Items),
@@ -150,7 +150,7 @@ const updateUser = async (id, data) => {
       statusCode: 200,
       headers: {
         'Access-Control-Allow-Headers': 'Content-Type',
-        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Origin': 'https://globalcityinformation.org',
         'Access-Control-Allow-Methods': 'OPTIONS,POST,GET,PUT,DELETE',
       },
       body: JSON.stringify({ message: 'User updated successfully!' }),
@@ -178,7 +178,7 @@ const deleteUser = async (id) => {
       statusCode: 200,
       headers: {
         'Access-Control-Allow-Headers': 'Content-Type',
-        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Origin': 'https://globalcityinformation.org',
         'Access-Control-Allow-Methods': 'OPTIONS,POST,GET,PUT,DELETE',
       },
       body: JSON.stringify({ message: 'User deleted successfully!' }),

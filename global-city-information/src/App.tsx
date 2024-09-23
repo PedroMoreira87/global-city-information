@@ -17,7 +17,6 @@ Amplify.configure({
 });
 
 function App() {
-  //TODO Set lambda functions to use the correct domain => "Access-Control-Allow-Origin": "*",
   return (
     <Authenticator className="app" signUpAttributes={['name']}>
       {() => (
