@@ -35,6 +35,7 @@ const Home = () => {
         }
       }
     };
+    console.log('test');
     fetchUserData();
   }, [user]);
 
