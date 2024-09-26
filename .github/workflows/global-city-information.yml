@@ -29,7 +29,7 @@ jobs:
         working-directory: global-city-information
 
       - name: Run ESLint
-        run: bun run eslint . --ext .js,.jsx,.ts,.tsx
+        run: bun run eslint
         working-directory: global-city-information
 
       - name: Build Project
@@ -65,7 +65,7 @@ jobs:
         working-directory: global-city-information
 
       - name: Run ESLint
-        run: bun run eslint . --ext .js,.jsx,.ts,.tsx
+        run: bun run eslint
         working-directory: global-city-information
 
       - name: Build Project
@@ -107,7 +107,7 @@ jobs:
         working-directory: global-city-information
 
       - name: Run ESLint
-        run: bun run eslint . --ext .js,.jsx,.ts,.tsx
+        run: bun run eslint
         working-directory: global-city-information
 
       - name: Build Project
