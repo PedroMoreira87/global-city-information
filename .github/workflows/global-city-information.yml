@@ -33,6 +33,10 @@ jobs:
         working-directory: global-city-information
 
       - name: Build Project
+        env:
+          VITE_USER_POOL_ID: ${{ secrets.VITE_USER_POOL_ID }}
+          VITE_CLIENT_ID: ${{ secrets.VITE_CLIENT_ID }}
+          VITE_GOOGLE_MAPS_API_KEY: ${{ secrets.VITE_GOOGLE_MAPS_API_KEY }}
         run: bun run build
         working-directory: global-city-information
 
@@ -69,6 +73,10 @@ jobs:
         working-directory: global-city-information
 
       - name: Build Project
+        env:
+          VITE_USER_POOL_ID: ${{ secrets.VITE_USER_POOL_ID }}
+          VITE_CLIENT_ID: ${{ secrets.VITE_CLIENT_ID }}
+          VITE_GOOGLE_MAPS_API_KEY: ${{ secrets.VITE_GOOGLE_MAPS_API_KEY }}
         run: bun run build
         working-directory: global-city-information
 
@@ -111,6 +119,10 @@ jobs:
         working-directory: global-city-information
 
       - name: Build Project
+        env:
+          VITE_USER_POOL_ID: ${{ secrets.VITE_USER_POOL_ID }}
+          VITE_CLIENT_ID: ${{ secrets.VITE_CLIENT_ID }}
+          VITE_GOOGLE_MAPS_API_KEY: ${{ secrets.VITE_GOOGLE_MAPS_API_KEY }}
         run: bun run build
         working-directory: global-city-information
 
