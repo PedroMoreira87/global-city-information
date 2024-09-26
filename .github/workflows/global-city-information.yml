@@ -19,21 +19,21 @@ jobs:
       - name: Check out repo code
         uses: actions/checkout@v4
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
+      - name: Set up Bun
+        uses: oven-sh/setup-bun@v2
         with:
-          node-version: '20'
+          bun-version: 'latest'
 
       - name: Install Dependencies
-        run: npm ci
+        run: bun install
         working-directory: global-city-information
 
       - name: Run ESLint
-        run: npx eslint . --ext .js,.jsx,.ts,.tsx
+        run: bun run eslint . --ext .js,.jsx,.ts,.tsx
         working-directory: global-city-information
 
       - name: Build Project
-        run: npm run build
+        run: bun run build
         working-directory: global-city-information
 
   deploy_dev:
@@ -55,21 +55,21 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ secrets.AWS_REGION }}
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
+      - name: Set up Bun
+        uses: oven-sh/setup-bun@v2
         with:
-          node-version: '20'
+          bun-version: 'latest'
 
       - name: Install Dependencies
-        run: npm ci
+        run: bun install
         working-directory: global-city-information
 
       - name: Run ESLint
-        run: npx eslint . --ext .js,.jsx,.ts,.tsx
+        run: bun run eslint . --ext .js,.jsx,.ts,.tsx
         working-directory: global-city-information
 
       - name: Build Project
-        run: npm run build
+        run: bun run build
         working-directory: global-city-information
 
       - name: Sync files to S3
@@ -97,21 +97,21 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ secrets.AWS_REGION }}
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
+      - name: Set up Bun
+        uses: oven-sh/setup-bun@v2
         with:
-          node-version: '20'
+          bun-version: 'latest'
 
       - name: Install Dependencies
-        run: npm ci
+        run: bun install
         working-directory: global-city-information
 
       - name: Run ESLint
-        run: npx eslint . --ext .js,.jsx,.ts,.tsx
+        run: bun run eslint . --ext .js,.jsx,.ts,.tsx
         working-directory: global-city-information
 
       - name: Build Project
-        run: npm run build
+        run: bun run build
         working-directory: global-city-information
 
       - name: Sync files to S3
