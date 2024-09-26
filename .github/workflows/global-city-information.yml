@@ -91,7 +91,7 @@ jobs:
     if: ${{ startsWith(github.ref, 'refs/tags/v') }}
     runs-on: ubuntu-latest
     environment:
-      name: Dev
+      name: Prod
       url: 'https://globalcityinformation.org'
 
     steps:
@@ -118,11 +118,13 @@ jobs:
         run: bun run eslint
         working-directory: global-city-information
 
+      - name: Create .env.production file
+        run: |
+          echo "VITE_USER_POOL_ID=${{ secrets.VITE_USER_POOL_ID }}" > global-city-information/.env.production
+          echo "VITE_CLIENT_ID=${{ secrets.VITE_CLIENT_ID }}" >> global-city-information/.env.production
+          echo "VITE_GOOGLE_MAPS_API_KEY=${{ secrets.VITE_GOOGLE_MAPS_API_KEY }}" >> global-city-information/.env.production
+
       - name: Build Project
-        env:
-          VITE_USER_POOL_ID: ${{ secrets.VITE_USER_POOL_ID }}
-          VITE_CLIENT_ID: ${{ secrets.VITE_CLIENT_ID }}
-          VITE_GOOGLE_MAPS_API_KEY: ${{ secrets.VITE_GOOGLE_MAPS_API_KEY }}
         run: bun run build
         working-directory: global-city-information
 
