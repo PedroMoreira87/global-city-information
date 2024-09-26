@@ -124,7 +124,7 @@ const Weather: React.FC<WeatherProps> = ({ onUserDataUpdate }) => {
             </FormControl>
           </Box>
           {weatherAPI && (
-            <Button variant="contained" onClick={handleSaveButton}>
+            <Button variant="contained" color="success" onClick={handleSaveButton}>
               Save Data
             </Button>
           )}
