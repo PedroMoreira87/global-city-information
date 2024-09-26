@@ -24,3 +24,6 @@ dist-ssr
 *.sw?
 
 .env
+
+# Ignore TypeScript incremental build files
+*.tsbuildinfo
