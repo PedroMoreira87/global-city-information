@@ -1,3 +1,7 @@
+## Welcome to Global City Information!
+
+https://globalcityinformation.org/
+
 ## Getting Started
 
 To run the project locally, you need to have the following installed:
