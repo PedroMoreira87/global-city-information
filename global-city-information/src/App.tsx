@@ -10,15 +10,24 @@ import Home from './pages/home/Home.tsx';
 Amplify.configure({
   Auth: {
     Cognito: {
-      userPoolClientId: awsConfig.userPoolWebClientId,
       userPoolId: awsConfig.userPoolId,
+      userPoolClientId: awsConfig.userPoolWebClientId,
+      loginWith: {
+        oauth: {
+          domain: awsConfig.oauthDomain,
+          scopes: ['email', 'openid', 'profile'],
+          redirectSignIn: [awsConfig.redirectSignIn],
+          redirectSignOut: [awsConfig.redirectSignOut],
+          responseType: 'code',
+        },
+      },
     },
   },
 });
 
 function App() {
   return (
-    <Authenticator className="app" signUpAttributes={['name']}>
+    <Authenticator className="app" signUpAttributes={['name']} socialProviders={['google']}>
       {() => (
         <main>
           <header className="App-header">
