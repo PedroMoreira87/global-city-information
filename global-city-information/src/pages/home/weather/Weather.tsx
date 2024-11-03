@@ -7,7 +7,7 @@ import { geolocation, getUser, updateUser, weatherData } from '../../../apis/aws
 import { City } from '../../../interfaces/city.interface.ts';
 import { Place, IWeather, User } from '../../../interfaces/user.interface.ts';
 import { WeatherAPI } from '../../../interfaces/weather-api.interface.ts';
-import MapWithGeocoding from './mapWithGeocoding/MapWithGeocoding.tsx';
+import MapWithGeocoding from './map-with-geocoding/MapWithGeocoding.tsx';
 import './Weather.scss';
 
 interface WeatherProps {
