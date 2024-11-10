@@ -16,4 +16,10 @@
   &__button {
     margin: 1rem 1rem 0 0;
   }
+
+  &__greetings {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+  }
 }
