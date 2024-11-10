@@ -57,7 +57,7 @@ const Home = () => {
             Sign Out
           </Button>
         </div>
-        <h1 className="home__greetings">Hello {userData?.name}!</h1>
+        <div className="home__greetings">Hello {userData?.name}!</div>
         {lastFiveWeather.length > 0 && (
           <TableContainer
             sx={{
