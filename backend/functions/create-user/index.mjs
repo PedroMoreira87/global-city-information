@@ -1,22 +1,33 @@
 import AWS from 'aws-sdk';
 
+const dynamo = new AWS.DynamoDB.DocumentClient();
+const tableName = 'User'; // Use environment variable for table name
+
+const logError = (error) => {
+  console.error('Error:', JSON.stringify(error, null, 2));
+};
+
+const validateUserAttributes = (attributes) => {
+  if (!attributes || !attributes.sub || !attributes.email || !attributes.name) {
+    throw new Error('Invalid user attributes in the event.');
+  }
+};
+
 export const handler = async (event) => {
-  const dynamo = new AWS.DynamoDB.DocumentClient();
-  const tableName = 'User';
-  const userAttributes = event.request.userAttributes;
-  const userId = userAttributes.sub;
-  // Check if the user already exists in DynamoDB
-  const getParams = {
-    TableName: tableName,
-    Key: { id: userId },
-  };
   try {
-    const data = await dynamo.get(getParams).promise();
-    if (data.Item) {
-      console.log('User already exists in DynamoDB');
-      return event;
+    const userAttributes = event.request.userAttributes;
+    validateUserAttributes(userAttributes);
+    const userId = userAttributes.sub;
+    // Check if the user already exists in DynamoDB
+    const getParams = {
+      TableName: tableName,
+      Key: { id: userId },
+    };
+    const { Item } = await dynamo.get(getParams).promise();
+    if (Item) {
+      console.log(`User already exists in DynamoDB: ${userId}`);
     } else {
-      const item = {
+      const newItem = {
         id: userId,
         name: userAttributes.name,
         email: userAttributes.email,
@@ -24,14 +35,14 @@ export const handler = async (event) => {
       };
       const putParams = {
         TableName: tableName,
-        Item: item,
+        Item: newItem,
       };
       await dynamo.put(putParams).promise();
-      console.log('User added to DynamoDB');
-      return event;
+      console.log(`User added to DynamoDB: ${userId}`);
     }
+    return event;
   } catch (error) {
-    console.error('Error handling user in DynamoDB:', error);
-    throw new Error('Failed to process user data.');
+    logError(error);
+    throw new Error(`Failed to process user data: ${error.message}`);
   }
 };

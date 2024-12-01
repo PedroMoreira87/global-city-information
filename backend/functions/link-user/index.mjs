@@ -14,7 +14,7 @@ export const handler = async (event) => {
     const existingUsers = await cognito.listUsers(params).promise();
     if (event.triggerSource === 'PreSignUp_SignUp') {
       // Handle Cognito (username/password) sign-up
-      console.log('Trigger source: PreSignUp_SignUp');
+      console.log('Trigger source: PreSignUp_SignUp.');
       if (existingUsers.Users && existingUsers.Users.length > 0) {
         const externalUser = existingUsers.Users.find(
           (user) =>
@@ -36,7 +36,7 @@ export const handler = async (event) => {
       // event.response.autoVerifyEmail = true;
     } else if (event.triggerSource === 'PreSignUp_ExternalProvider') {
       // Handle external provider sign-up
-      console.log('Trigger source: PreSignUp_ExternalProvider');
+      console.log('Trigger source: PreSignUp_ExternalProvider.');
       const userName = event.userName; // e.g., 'google_1234567890'
       // Extract providerName and providerUserId
       const [rawProviderName, providerUserId] = userName.split('_');
