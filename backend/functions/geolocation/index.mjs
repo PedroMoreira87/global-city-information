@@ -19,7 +19,7 @@ export const handler = async (event) => {
     }
     const apiKey = process.env.OPEN_WEATHER_API_KEY;
     if (!apiKey) {
-      throw new Error('OpenWeatherMap API key is not configureds');
+      throw new Error('OpenWeatherMap API key is not configured');
     }
     const url = `https://api.openweathermap.org/geo/1.0/direct?q=${cityInput}&limit=5&appid=${apiKey}`;
     const response = await axios.get(url);

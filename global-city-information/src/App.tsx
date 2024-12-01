@@ -27,7 +27,7 @@ Amplify.configure({
 
 function App() {
   return (
-    <Authenticator className="app" signUpAttributes={['name']} socialProviders={['google']}>
+    <Authenticator className="apps" signUpAttributes={['name']} socialProviders={['google']}>
       {() => (
         <main>
           <header className="App-header">
