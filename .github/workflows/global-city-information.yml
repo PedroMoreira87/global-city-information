@@ -4,10 +4,10 @@ on:
   push:
     branches: [ 'main' ]
     tags: [ 'v*' ]
-    paths: [ 'global-city-information/**' ]
+#    paths: [ 'global-city-information/**' ]
   pull_request:
     branches: [ 'main' ]
-    paths: [ 'global-city-information/**' ]
+#    paths: [ 'global-city-information/**' ]
   workflow_dispatch:
 
 permissions:
@@ -30,11 +30,11 @@ jobs:
 
       - name: Install Dependencies
         run: bun install
-        working-directory: global-city-information
+#        working-directory: global-city-information
 
       - name: Run ESLint
         run: bun run eslint
-        working-directory: global-city-information
+#        working-directory: global-city-information
 
       - name: Build Project
         env:
@@ -42,7 +42,7 @@ jobs:
           VITE_CLIENT_ID: ${{ secrets.VITE_CLIENT_ID }}
           VITE_GOOGLE_MAPS_API_KEY: ${{ secrets.VITE_GOOGLE_MAPS_API_KEY }}
         run: bun run build
-        working-directory: global-city-information
+#        working-directory: global-city-information
 
   deploy_dev:
     name: Build and Deploy to Dev on Merge to Main
@@ -69,11 +69,11 @@ jobs:
 
       - name: Install Dependencies
         run: bun install
-        working-directory: global-city-information
+#        working-directory: global-city-information
 
       - name: Run ESLint
         run: bun run eslint
-        working-directory: global-city-information
+#        working-directory: global-city-information
 
       - name: Build Project
         env:
@@ -81,10 +81,10 @@ jobs:
           VITE_CLIENT_ID: ${{ secrets.VITE_CLIENT_ID }}
           VITE_GOOGLE_MAPS_API_KEY: ${{ secrets.VITE_GOOGLE_MAPS_API_KEY }}
         run: bun run build
-        working-directory: global-city-information
+#        working-directory: global-city-information
 
       - name: Sync files to S3
-        run: aws s3 sync global-city-information/dist s3://global-city-information --delete
+        run: aws s3 sync dist s3://global-city-information --delete
 
       - name: Invalidate CloudFront Distribution
         run: aws cloudfront create-invalidation --distribution-id ${{ secrets.CLOUDFRONT_DISTRIBUTION_ID }} --paths "/*"
@@ -114,24 +114,27 @@ jobs:
 
       - name: Install Dependencies
         run: bun install
-        working-directory: global-city-information
+#        working-directory: global-city-information
 
       - name: Run ESLint
         run: bun run eslint
-        working-directory: global-city-information
+#        working-directory: global-city-information
 
       - name: Create .env.production file
         run: |
-          echo "VITE_USER_POOL_ID=${{ secrets.VITE_USER_POOL_ID }}" > global-city-information/.env.production
-          echo "VITE_CLIENT_ID=${{ secrets.VITE_CLIENT_ID }}" >> global-city-information/.env.production
-          echo "VITE_GOOGLE_MAPS_API_KEY=${{ secrets.VITE_GOOGLE_MAPS_API_KEY }}" >> global-city-information/.env.production
+#          echo "VITE_USER_POOL_ID=${{ secrets.VITE_USER_POOL_ID }}" > global-city-information/.env.production
+          echo "VITE_USER_POOL_ID=${{ secrets.VITE_USER_POOL_ID }}" > .env.production
+#          echo "VITE_CLIENT_ID=${{ secrets.VITE_CLIENT_ID }}" >> global-city-information/.env.production
+          echo "VITE_CLIENT_ID=${{ secrets.VITE_CLIENT_ID }}" >> .env.production
+#          echo "VITE_GOOGLE_MAPS_API_KEY=${{ secrets.VITE_GOOGLE_MAPS_API_KEY }}" >> global-city-information/.env.production
+          echo "VITE_GOOGLE_MAPS_API_KEY=${{ secrets.VITE_GOOGLE_MAPS_API_KEY }}" >> .env.production
 
       - name: Build Project
         run: bun run build
-        working-directory: global-city-information
+#        working-directory: global-city-information
 
       - name: Sync files to S3
-        run: aws s3 sync global-city-information/dist s3://global-city-information --delete
+        run: aws s3 dist s3://global-city-information --delete
 
       - name: Invalidate CloudFront Distribution
         run: aws cloudfront create-invalidation --distribution-id ${{ secrets.CLOUDFRONT_DISTRIBUTION_ID }} --paths "/*"
