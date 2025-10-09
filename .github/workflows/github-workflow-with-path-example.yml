@@ -50,7 +50,7 @@
 #    runs-on: ubuntu-latest
 #    environment:
 #      name: Dev
-#      url: 'https://globalcityinformation.org'
+#      url: 'https://d2u17pmw1fxael.cloudfront.net/'
 #
 #    steps:
 #      - name: Check out repo code
@@ -95,7 +95,7 @@
 #    runs-on: ubuntu-latest
 #    environment:
 #      name: Prod
-#      url: 'https://globalcityinformation.org'
+#      url: 'https://d2u17pmw1fxael.cloudfront.net/'
 #
 #    steps:
 #      - name: Check out repo code

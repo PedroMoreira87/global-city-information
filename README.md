@@ -1,6 +1,6 @@
 ## Welcome to Global City Information!
 
-https://globalcityinformation.org/
+https://d2u17pmw1fxael.cloudfront.net/
 
 Global City Information is a globally accessible web service that provides users with information about cities worldwide. It features a user-friendly interface for city searches and displays details like weather and tourist attractions. The project is hosted on AWS and distributed across multiple regions to ensure global availability and fast response times.
 

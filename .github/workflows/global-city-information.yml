@@ -2,10 +2,10 @@ name: Global City Information
 
 on:
   push:
-    branches: [ 'main' ]
-    tags: [ 'v*' ]
+    branches: ["main"]
+    tags: ["v*"]
   pull_request:
-    branches: [ 'main' ]
+    branches: ["main"]
   workflow_dispatch:
 
 permissions:
@@ -24,7 +24,7 @@ jobs:
       - name: Set up Bun
         uses: oven-sh/setup-bun@v2
         with:
-          bun-version: 'latest'
+          bun-version: "latest"
 
       - name: Install Dependencies
         run: bun install
@@ -45,7 +45,7 @@ jobs:
     runs-on: ubuntu-latest
     environment:
       name: Dev
-      url: 'https://globalcityinformation.org'
+      url: "https://d2u17pmw1fxael.cloudfront.net/"
 
     steps:
       - name: Check out repo code
@@ -60,7 +60,7 @@ jobs:
       - name: Set up Bun
         uses: oven-sh/setup-bun@v2
         with:
-          bun-version: 'latest'
+          bun-version: "latest"
 
       - name: Install Dependencies
         run: bun install
@@ -87,7 +87,7 @@ jobs:
     runs-on: ubuntu-latest
     environment:
       name: Prod
-      url: 'https://globalcityinformation.org'
+      url: "https://d2u17pmw1fxael.cloudfront.net/"
 
     steps:
       - name: Check out repo code
@@ -102,7 +102,7 @@ jobs:
       - name: Set up Bun
         uses: oven-sh/setup-bun@v2
         with:
-          bun-version: 'latest'
+          bun-version: "latest"
 
       - name: Install Dependencies
         run: bun install

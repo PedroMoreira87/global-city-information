@@ -9,7 +9,7 @@ const tableName = 'User';
 // Reusable CORS headers
 const CORS_HEADERS = {
   'Access-Control-Allow-Headers': 'Content-Type',
-  'Access-Control-Allow-Origin': 'https://globalcityinformation.org',
+  'Access-Control-Allow-Origin': 'https://d2u17pmw1fxael.cloudfront.net/',
   'Access-Control-Allow-Methods': 'OPTIONS,POST,GET,PUT,DELETE',
 };
 
@@ -22,15 +22,7 @@ const createResponse = (statusCode, body) => ({
 
 // Validate weather data
 const validateWeatherData = (weather) => {
-  const {
-    place,
-    temperature,
-    feelsLike,
-    description,
-    humidity,
-    latitude,
-    longitude,
-  } = weather;
+  const { place, temperature, feelsLike, description, humidity, latitude, longitude } = weather;
   if (
     !place ||
     place.city === undefined ||
@@ -121,8 +113,7 @@ const updateUser = async (id, weather) => {
     const params = {
       TableName: tableName,
       Key: { id },
-      UpdateExpression:
-        'SET #weather = list_append(if_not_exists(#weather, :empty_list), :new_weather)',
+      UpdateExpression: 'SET #weather = list_append(if_not_exists(#weather, :empty_list), :new_weather)',
       ExpressionAttributeNames: {
         '#weather': 'weather',
       },
