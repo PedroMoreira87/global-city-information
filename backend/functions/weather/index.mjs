@@ -3,7 +3,7 @@ import axios from 'axios';
 // Reusable CORS headers
 const CORS_HEADERS = {
   'Access-Control-Allow-Headers': 'Content-Type',
-  'Access-Control-Allow-Origin': 'https://d2u17pmw1fxael.cloudfront.net/',
+  'Access-Control-Allow-Origin': 'https://d2u17pmw1fxael.cloudfront.net',
   'Access-Control-Allow-Methods': 'OPTIONS,POST,GET',
 };
 

@@ -4,7 +4,7 @@ const generateResponse = (statusCode, body) => ({
   statusCode,
   headers: {
     'Access-Control-Allow-Headers': 'Content-Type',
-    'Access-Control-Allow-Origin': 'https://d2u17pmw1fxael.cloudfront.net/',
+    'Access-Control-Allow-Origin': 'https://d2u17pmw1fxael.cloudfront.net',
     'Access-Control-Allow-Methods': 'OPTIONS,POST,GET',
   },
   body: JSON.stringify(body),
