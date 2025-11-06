@@ -13,9 +13,11 @@ apiClient.interceptors.request.use(async (config) => {
 
     // Use ID Token for Cognito Authorizer
     if (tokens?.idToken) {
-      const tokenString = tokens.idToken.toString();
-      console.log('🔐 Using ID Token:', tokenString.substring(0, 50) + '...');
-      config.headers.Authorization = `Bearer ${tokenString}`;
+      const token = tokens.idToken.toString();
+      console.log('🔐 FULL ID TOKEN:');
+      console.log(token); // This will show the complete token
+      console.log('📏 Token length:', token.length);
+      config.headers.Authorization = `Bearer ${token}`;
     }
   } catch (error) {
     console.log('Error fetching auth session:', error);
