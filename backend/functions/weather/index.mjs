@@ -1,16 +1,13 @@
 import axios from 'axios';
 
-// Reusable CORS headers
-const CORS_HEADERS = {
-  'Access-Control-Allow-Headers': 'Content-Type',
-  'Access-Control-Allow-Origin': 'https://d2u17pmw1fxael.cloudfront.net',
-  'Access-Control-Allow-Methods': 'OPTIONS,POST,GET',
-};
-
 // Helper function to create responses
 const createResponse = (statusCode, body) => ({
   statusCode,
-  headers: CORS_HEADERS,
+  headers: {
+    'Access-Control-Allow-Headers': 'Content-Type',
+    'Access-Control-Allow-Origin': 'https://d2u17pmw1fxael.cloudfront.net',
+    'Access-Control-Allow-Methods': 'OPTIONS,POST,GET',
+  },
   body: JSON.stringify(body),
 });
 

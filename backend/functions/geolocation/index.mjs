@@ -15,7 +15,7 @@ export const handler = async (event) => {
     const parsedBody = event.body ? JSON.parse(event.body) : {};
     const { cityInput } = parsedBody;
     if (!cityInput) {
-      return generateResponse(400, { error: 'cityInput is required.' });
+      return generateResponse(400, { error: 'CityInput is required.' });
     }
     const apiKey = process.env.OPEN_WEATHER_API_KEY;
     if (!apiKey) {

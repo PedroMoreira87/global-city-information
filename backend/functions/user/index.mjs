@@ -6,17 +6,14 @@ const client = new DynamoDBClient();
 const dynamo = DynamoDBDocumentClient.from(client);
 const tableName = 'User';
 
-// Reusable CORS headers
-const CORS_HEADERS = {
-  'Access-Control-Allow-Headers': 'Content-Type',
-  'Access-Control-Allow-Origin': 'https://d2u17pmw1fxael.cloudfront.net',
-  'Access-Control-Allow-Methods': 'OPTIONS,POST,GET,PUT,DELETE',
-};
-
 // Helper for standard responses
 const createResponse = (statusCode, body) => ({
   statusCode,
-  headers: CORS_HEADERS,
+  headers: {
+    'Access-Control-Allow-Headers': 'Content-Type',
+    'Access-Control-Allow-Origin': 'https://d2u17pmw1fxael.cloudfront.net',
+    'Access-Control-Allow-Methods': 'OPTIONS,POST,GET,PUT,DELETE',
+  },
   body: JSON.stringify(body),
 });
 
