@@ -6,25 +6,7 @@ import { IWeather } from '../interfaces/user.interface';
 // Create axios instance with base config
 const apiClient = axios.create();
 
-// // Add request interceptor to include auth token
-// apiClient.interceptors.request.use(
-//   async (config) => {
-//     try {
-//       const { tokens } = await fetchAuthSession();
-//       if (tokens?.idToken) {
-//         config.headers.Authorization = `Bearer ${tokens.idToken.toString()}`;
-//       }
-//     } catch (error) {
-//       console.log(error, 'No authenticated user found');
-//       // Optional: redirect to login or handle unauthenticated state
-//     }
-//     return config;
-//   },
-//   (error) => {
-//     return Promise.reject(error);
-//   },
-// );
-
+// Add request interceptor to include auth token
 apiClient.interceptors.request.use(async (config) => {
   try {
     const { tokens } = await fetchAuthSession();
@@ -39,22 +21,22 @@ apiClient.interceptors.request.use(async (config) => {
       const token = tokens.accessToken.toString();
       console.log('🔄 Using Access Token as fallback');
       config.headers.Authorization = `Bearer ${token}`;
+    } else {
+      console.log('⚠️ No tokens available');
     }
 
+    // Log the final authorization header (first 50 chars)
     const authHeader = config.headers.Authorization;
-    const headerStr =
-      typeof authHeader === 'string'
-        ? authHeader
-        : Array.isArray(authHeader)
-          ? authHeader.join(', ')
-          : authHeader !== undefined && authHeader !== null
-            ? String(authHeader)
-            : '';
-    console.log('📤 Final Authorization header:', headerStr.substring(0, 50) + (headerStr.length > 50 ? '...' : ''));
+    console.log(
+      '📤 Final Authorization header:',
+      typeof authHeader === 'string' ? authHeader.substring(0, 50) + '...' : 'undefined',
+    );
+
+    return config;
   } catch (error) {
     console.log('🚨 Error fetching auth session:', error);
+    return Promise.reject(error);
   }
-  return config;
 });
 
 // Add response interceptor to handle auth errors
@@ -97,6 +79,11 @@ export const updateUser = async (userId: string, userWeather: IWeather) => {
 };
 
 export const getUser = async (userId: string) => {
+  const { tokens } = await fetchAuthSession();
+  if (!tokens?.idToken) {
+    throw new Error('No authentication token available');
+  }
+
   const response = await apiClient.get(`https://yzl2gp4vz5.execute-api.us-east-1.amazonaws.com/dev/users/${userId}`);
   return response.data;
 };
