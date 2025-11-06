@@ -30,8 +30,12 @@ apiClient.interceptors.response.use(
   (response) => response,
   async (error) => {
     if (error.response?.status === 401) {
-      // Token expired or invalid - redirect to login
-      window.location.href = '/';
+      // Just log the 401 error without redirecting
+      console.log('Authentication error - 401 Unauthorized');
+      console.log('Error details:', error.response?.data);
+    } else {
+      // Log other errors
+      console.log('API Error:', error.response?.status, error.response?.data);
     }
     return Promise.reject(error);
   },
