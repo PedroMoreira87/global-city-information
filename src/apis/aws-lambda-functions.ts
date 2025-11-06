@@ -11,32 +11,16 @@ apiClient.interceptors.request.use(async (config) => {
   try {
     const { tokens } = await fetchAuthSession();
 
-    // Use idToken instead of accessToken for Cognito Authorizer
+    // Use ID Token for Cognito Authorizer
     if (tokens?.idToken) {
-      const token = tokens.idToken.toString();
-      console.log('✅ Using ID Token for Cognito Authorizer');
-      config.headers.Authorization = `Bearer ${token}`;
-    } else if (tokens?.accessToken) {
-      // Fallback to accessToken
-      const token = tokens.accessToken.toString();
-      console.log('🔄 Using Access Token as fallback');
-      config.headers.Authorization = `Bearer ${token}`;
-    } else {
-      console.log('⚠️ No tokens available');
+      const tokenString = tokens.idToken.toString();
+      console.log('🔐 Using ID Token:', tokenString.substring(0, 50) + '...');
+      config.headers.Authorization = `Bearer ${tokenString}`;
     }
-
-    // Log the final authorization header (first 50 chars)
-    const authHeader = config.headers.Authorization;
-    console.log(
-      '📤 Final Authorization header:',
-      typeof authHeader === 'string' ? authHeader.substring(0, 50) + '...' : 'undefined',
-    );
-
-    return config;
   } catch (error) {
-    console.log('🚨 Error fetching auth session:', error);
-    return Promise.reject(error);
+    console.log('Error fetching auth session:', error);
   }
+  return config;
 });
 
 // Add response interceptor to handle auth errors
@@ -79,11 +63,6 @@ export const updateUser = async (userId: string, userWeather: IWeather) => {
 };
 
 export const getUser = async (userId: string) => {
-  const { tokens } = await fetchAuthSession();
-  if (!tokens?.idToken) {
-    throw new Error('No authentication token available');
-  }
-
   const response = await apiClient.get(`https://yzl2gp4vz5.execute-api.us-east-1.amazonaws.com/dev/users/${userId}`);
   return response.data;
 };
