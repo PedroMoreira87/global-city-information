@@ -6,17 +6,41 @@ import { IWeather } from '../interfaces/user.interface';
 // Create axios instance with base config
 const apiClient = axios.create();
 
+// // Add request interceptor to include auth token
+// apiClient.interceptors.request.use(
+//   async (config) => {
+//     try {
+//       const { tokens } = await fetchAuthSession();
+//       if (tokens?.idToken) {
+//         config.headers.Authorization = `Bearer ${tokens.idToken.toString()}`;
+//       }
+//     } catch (error) {
+//       console.log(error, 'No authenticated user found');
+//       // Optional: redirect to login or handle unauthenticated state
+//     }
+//     return config;
+//   },
+//   (error) => {
+//     return Promise.reject(error);
+//   },
+// );
+
 // Add request interceptor to include auth token
 apiClient.interceptors.request.use(
   async (config) => {
     try {
       const { tokens } = await fetchAuthSession();
+      console.log('Auth session tokens:', tokens); // Debug log
+
       if (tokens?.idToken) {
-        config.headers.Authorization = `Bearer ${tokens.idToken.toString()}`;
+        const token = tokens.idToken.toString();
+        console.log('Adding Authorization header with token'); // Debug log
+        config.headers.Authorization = `Bearer ${token}`;
+      } else {
+        console.log('No idToken found in session'); // Debug log
       }
     } catch (error) {
-      console.log(error, 'No authenticated user found');
-      // Optional: redirect to login or handle unauthenticated state
+      console.log('Error fetching auth session:', error); // Debug log
     }
     return config;
   },
