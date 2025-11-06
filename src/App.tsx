@@ -15,7 +15,7 @@ Amplify.configure({
       loginWith: {
         oauth: {
           domain: awsConfig.oauthDomain,
-          scopes: ['email', 'openid', 'profile', 'aws.cognito.signin.user.admin'],
+          scopes: ['email', 'openid', 'profile'],
           redirectSignIn: [awsConfig.redirectSignIn],
           redirectSignOut: [awsConfig.redirectSignOut],
           responseType: 'code',
