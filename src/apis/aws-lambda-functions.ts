@@ -25,29 +25,37 @@ const apiClient = axios.create();
 //   },
 // );
 
-// Add request interceptor to include auth token
-apiClient.interceptors.request.use(
-  async (config) => {
-    try {
-      const { tokens } = await fetchAuthSession();
-      console.log('Auth session tokens:', tokens); // Debug log
+apiClient.interceptors.request.use(async (config) => {
+  try {
+    const { tokens } = await fetchAuthSession();
 
-      if (tokens?.idToken) {
-        const token = tokens.idToken.toString();
-        console.log('Adding Authorization header with token'); // Debug log
-        config.headers.Authorization = `Bearer ${token}`;
-      } else {
-        console.log('No idToken found in session'); // Debug log
-      }
-    } catch (error) {
-      console.log('Error fetching auth session:', error); // Debug log
+    // Use idToken instead of accessToken for Cognito Authorizer
+    if (tokens?.idToken) {
+      const token = tokens.idToken.toString();
+      console.log('✅ Using ID Token for Cognito Authorizer');
+      config.headers.Authorization = `Bearer ${token}`;
+    } else if (tokens?.accessToken) {
+      // Fallback to accessToken
+      const token = tokens.accessToken.toString();
+      console.log('🔄 Using Access Token as fallback');
+      config.headers.Authorization = `Bearer ${token}`;
     }
-    return config;
-  },
-  (error) => {
-    return Promise.reject(error);
-  },
-);
+
+    const authHeader = config.headers.Authorization;
+    const headerStr =
+      typeof authHeader === 'string'
+        ? authHeader
+        : Array.isArray(authHeader)
+          ? authHeader.join(', ')
+          : authHeader !== undefined && authHeader !== null
+            ? String(authHeader)
+            : '';
+    console.log('📤 Final Authorization header:', headerStr.substring(0, 50) + (headerStr.length > 50 ? '...' : ''));
+  } catch (error) {
+    console.log('🚨 Error fetching auth session:', error);
+  }
+  return config;
+});
 
 // Add response interceptor to handle auth errors
 apiClient.interceptors.response.use(
