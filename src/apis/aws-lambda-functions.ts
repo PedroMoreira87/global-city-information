@@ -20,9 +20,11 @@ apiClient.interceptors.request.use(async (config) => {
     // Ensure headers object exists
     config.headers = config.headers || {};
 
-    // Set required headers
+    // Set only required headers
     config.headers['Authorization'] = `Bearer ${token}`;
     config.headers['Content-Type'] = 'application/json';
+    // Remove any cache-control headers as they're causing CORS issues
+    delete config.headers['Cache-Control'];
 
     // Log headers for debugging
     console.log('🔐 Request headers:', {
@@ -76,19 +78,15 @@ export const updateUser = async (userId: string, userWeather: IWeather) => {
   return response.data;
 };
 
+// Update the getUser function to remove cache-control header
 export const getUser = async (userId: string) => {
   try {
-    // Verify auth session before making the call
     const { tokens } = await fetchAuthSession();
     if (!tokens?.idToken) {
       throw new Error('No authentication token available');
     }
 
-    const response = await apiClient.get(`https://yzl2gp4vz5.execute-api.us-east-1.amazonaws.com/dev/users/${userId}`, {
-      headers: {
-        'Cache-Control': 'no-cache',
-      },
-    });
+    const response = await apiClient.get(`https://yzl2gp4vz5.execute-api.us-east-1.amazonaws.com/dev/users/${userId}`);
     return response.data;
   } catch (error: Error | unknown) {
     if (axios.isAxiosError(error)) {
