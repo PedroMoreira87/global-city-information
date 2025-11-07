@@ -1,5 +1,5 @@
 import { fetchAuthSession } from 'aws-amplify/auth';
-import axios, { AxiosRequestHeaders } from 'axios';
+import axios from 'axios';
 
 import { IWeather } from '../interfaces/user.interface';
 
@@ -17,46 +17,26 @@ apiClient.interceptors.request.use(async (config) => {
 
     const token = tokens.idToken.toString();
 
-    // Assign headers without replacing AxiosHeaders instance
-    if (config.headers && typeof config.headers.set === 'function') {
-      config.headers.set('Authorization', `Bearer ${token}`);
-      config.headers.set('Content-Type', 'application/json');
-      config.headers.set('Accept', 'application/json');
-    } else {
-      if (config.headers && typeof (config.headers as AxiosRequestHeaders).set === 'function') {
-        (config.headers as AxiosRequestHeaders).set('Authorization', `Bearer ${token}`);
-        (config.headers as AxiosRequestHeaders).set('Content-Type', 'application/json');
-        (config.headers as AxiosRequestHeaders).set('Accept', 'application/json');
-      } else {
-        if (config.headers && typeof (config.headers as AxiosRequestHeaders).set === 'function') {
-          (config.headers as AxiosRequestHeaders).set('Authorization', `Bearer ${token}`);
-          (config.headers as AxiosRequestHeaders).set('Content-Type', 'application/json');
-          (config.headers as AxiosRequestHeaders).set('Accept', 'application/json');
-        } else {
-          config.headers = {
-            Authorization: `Bearer ${token}`,
-            'Content-Type': 'application/json',
-            Accept: 'application/json',
-          } as AxiosRequestHeaders;
-        }
-      }
-    }
+    // Simplify headers setting
+    config.headers = new axios.AxiosHeaders({
+      Authorization: `Bearer ${token}`,
+      'Content-Type': 'application/json',
+      Accept: 'application/json',
+    });
 
-    // Debug logging
-    console.log('🔑 Token validation:', {
-      tokenExists: !!token,
-      tokenLength: token.length,
-      firstChars: token.substring(0, 20) + '...',
-      headers: {
-        Authorization: 'Bearer [REDACTED]',
-        ContentType: config.headers['Content-Type'],
-      },
+    // Add detailed logging
+    const tokenFirstPart = token.split('.')[0] || '';
+    console.log('🔐 Request details:', {
+      endpoint: config.url,
+      method: config.method,
+      tokenHeader: `Bearer ${tokenFirstPart}...`,
+      headers: config.headers,
     });
 
     return config;
   } catch (error) {
     console.error('🚨 Auth interceptor error:', error);
-    return Promise.reject(error);
+    throw error; // Don't return Promise.reject(error)
   }
 });
 
@@ -99,35 +79,33 @@ export const updateUser = async (userId: string, userWeather: IWeather) => {
   return response.data;
 };
 
-// Update getUser function with better error handling
 export const getUser = async (userId: string) => {
   try {
-    // Verify auth session explicitly before making the call
     const { tokens } = await fetchAuthSession();
+
+    // Validate token
     if (!tokens?.idToken) {
       throw new Error('No authentication token available');
     }
 
-    console.log('🔍 Making request for user:', userId);
-
-    const response = await apiClient.get(`https://yzl2gp4vz5.execute-api.us-east-1.amazonaws.com/dev/users/${userId}`, {
-      validateStatus: (status) => {
-        console.log('📡 Response status:', status);
-        return status >= 200 && status < 300;
-      },
+    // Log full request details
+    console.log('📝 User request details:', {
+      userId,
+      hasToken: !!tokens.idToken,
+      tokenExpiry: new Date((tokens.idToken.payload.exp || 0) * 1000).toISOString(),
     });
 
-    console.log('✅ Request successful');
+    const response = await apiClient.get(`https://yzl2gp4vz5.execute-api.us-east-1.amazonaws.com/dev/users/${userId}`);
+
     return response.data;
-  } catch (error: unknown) {
+  } catch (error) {
     if (axios.isAxiosError(error)) {
-      console.error('❌ Get user error:', {
+      console.error('❌ Request failed:', {
         status: error.response?.status,
-        statusText: error.response?.statusText,
-        data: error.response?.data,
+        message: error.response?.data?.message,
         headers: error.response?.headers,
       });
-      throw error;
     }
+    throw error;
   }
 };
