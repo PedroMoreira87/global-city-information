@@ -1,5 +1,5 @@
 import { fetchAuthSession } from 'aws-amplify/auth';
-import axios from 'axios';
+import axios, { AxiosRequestHeaders } from 'axios';
 
 import { IWeather } from '../interfaces/user.interface';
 
@@ -17,19 +17,40 @@ apiClient.interceptors.request.use(async (config) => {
 
     const token = tokens.idToken.toString();
 
-    // Ensure headers object exists
-    config.headers = config.headers || {};
+    // Assign headers without replacing AxiosHeaders instance
+    if (config.headers && typeof config.headers.set === 'function') {
+      config.headers.set('Authorization', `Bearer ${token}`);
+      config.headers.set('Content-Type', 'application/json');
+      config.headers.set('Accept', 'application/json');
+    } else {
+      if (config.headers && typeof (config.headers as AxiosRequestHeaders).set === 'function') {
+        (config.headers as AxiosRequestHeaders).set('Authorization', `Bearer ${token}`);
+        (config.headers as AxiosRequestHeaders).set('Content-Type', 'application/json');
+        (config.headers as AxiosRequestHeaders).set('Accept', 'application/json');
+      } else {
+        if (config.headers && typeof (config.headers as AxiosRequestHeaders).set === 'function') {
+          (config.headers as AxiosRequestHeaders).set('Authorization', `Bearer ${token}`);
+          (config.headers as AxiosRequestHeaders).set('Content-Type', 'application/json');
+          (config.headers as AxiosRequestHeaders).set('Accept', 'application/json');
+        } else {
+          config.headers = {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json',
+            Accept: 'application/json',
+          } as AxiosRequestHeaders;
+        }
+      }
+    }
 
-    // Set only required headers
-    config.headers['Authorization'] = `Bearer ${token}`;
-    config.headers['Content-Type'] = 'application/json';
-    // Remove any cache-control headers as they're causing CORS issues
-    delete config.headers['Cache-Control'];
-
-    // Log headers for debugging
-    console.log('🔐 Request headers:', {
-      Authorization: config.headers.Authorization ? 'Bearer [TOKEN]' : 'missing',
-      ContentType: config.headers['Content-Type'],
+    // Debug logging
+    console.log('🔑 Token validation:', {
+      tokenExists: !!token,
+      tokenLength: token.length,
+      firstChars: token.substring(0, 20) + '...',
+      headers: {
+        Authorization: 'Bearer [REDACTED]',
+        ContentType: config.headers['Content-Type'],
+      },
     });
 
     return config;
@@ -78,25 +99,35 @@ export const updateUser = async (userId: string, userWeather: IWeather) => {
   return response.data;
 };
 
-// Update the getUser function to remove cache-control header
+// Update getUser function with better error handling
 export const getUser = async (userId: string) => {
   try {
+    // Verify auth session explicitly before making the call
     const { tokens } = await fetchAuthSession();
     if (!tokens?.idToken) {
       throw new Error('No authentication token available');
     }
 
-    const response = await apiClient.get(`https://yzl2gp4vz5.execute-api.us-east-1.amazonaws.com/dev/users/${userId}`);
+    console.log('🔍 Making request for user:', userId);
+
+    const response = await apiClient.get(`https://yzl2gp4vz5.execute-api.us-east-1.amazonaws.com/dev/users/${userId}`, {
+      validateStatus: (status) => {
+        console.log('📡 Response status:', status);
+        return status >= 200 && status < 300;
+      },
+    });
+
+    console.log('✅ Request successful');
     return response.data;
-  } catch (error: Error | unknown) {
+  } catch (error: unknown) {
     if (axios.isAxiosError(error)) {
-      console.error('🚨 Get user error:', {
+      console.error('❌ Get user error:', {
         status: error.response?.status,
-        message: error.response?.data?.message || error.message,
+        statusText: error.response?.statusText,
+        data: error.response?.data,
+        headers: error.response?.headers,
       });
-    } else {
-      console.error('🚨 Get user error:', error);
+      throw error;
     }
-    throw error;
   }
 };
