@@ -11,18 +11,30 @@ apiClient.interceptors.request.use(async (config) => {
   try {
     const { tokens } = await fetchAuthSession();
 
-    // Use ID Token for Cognito Authorizer
-    if (tokens?.idToken) {
-      const token = tokens.idToken.toString();
-      console.log('🔐 FULL ID TOKEN:');
-      console.log(token); // This will show the complete token
-      console.log('📏 Token length:', token.length);
-      config.headers.Authorization = `Bearer ${token}`;
+    if (!tokens?.idToken) {
+      throw new Error('No ID token available');
     }
+
+    const token = tokens.idToken.toString();
+
+    // Ensure headers object exists
+    config.headers = config.headers || {};
+
+    // Set required headers
+    config.headers['Authorization'] = `Bearer ${token}`;
+    config.headers['Content-Type'] = 'application/json';
+
+    // Log headers for debugging
+    console.log('🔐 Request headers:', {
+      Authorization: config.headers.Authorization ? 'Bearer [TOKEN]' : 'missing',
+      ContentType: config.headers['Content-Type'],
+    });
+
+    return config;
   } catch (error) {
-    console.log('Error fetching auth session:', error);
+    console.error('🚨 Auth interceptor error:', error);
+    return Promise.reject(error);
   }
-  return config;
 });
 
 // Add response interceptor to handle auth errors
@@ -65,6 +77,28 @@ export const updateUser = async (userId: string, userWeather: IWeather) => {
 };
 
 export const getUser = async (userId: string) => {
-  const response = await apiClient.get(`https://yzl2gp4vz5.execute-api.us-east-1.amazonaws.com/dev/users/${userId}`);
-  return response.data;
+  try {
+    // Verify auth session before making the call
+    const { tokens } = await fetchAuthSession();
+    if (!tokens?.idToken) {
+      throw new Error('No authentication token available');
+    }
+
+    const response = await apiClient.get(`https://yzl2gp4vz5.execute-api.us-east-1.amazonaws.com/dev/users/${userId}`, {
+      headers: {
+        'Cache-Control': 'no-cache',
+      },
+    });
+    return response.data;
+  } catch (error: Error | unknown) {
+    if (axios.isAxiosError(error)) {
+      console.error('🚨 Get user error:', {
+        status: error.response?.status,
+        message: error.response?.data?.message || error.message,
+      });
+    } else {
+      console.error('🚨 Get user error:', error);
+    }
+    throw error;
+  }
 };
