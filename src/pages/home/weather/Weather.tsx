@@ -88,19 +88,25 @@ const Weather: React.FC<WeatherProps> = ({ onUserDataUpdate }) => {
 	};
 
 	const handleSaveButton = async () => {
+		if (!placesFoundSelect || !weatherAPI) {
+			toast.error(
+				"Please select a place and ensure weather data is loaded before saving.",
+			);
+			return;
+		}
 		const place: Place = {
-			city: placesFoundSelect!.name,
-			state: placesFoundSelect!.state,
-			country: placesFoundSelect!.country,
+			city: placesFoundSelect.name,
+			state: placesFoundSelect.state,
+			country: placesFoundSelect.country,
 		};
 		const userWeather: IWeather = {
 			place: place,
-			temperature: weatherAPI!.current.temp,
-			feelsLike: weatherAPI!.current.feels_like,
-			description: weatherAPI!.current.weather[0].description,
-			humidity: weatherAPI!.current.humidity,
-			latitude: weatherAPI!.lat,
-			longitude: weatherAPI!.lon,
+			temperature: weatherAPI.current.temp,
+			feelsLike: weatherAPI.current.feels_like,
+			description: weatherAPI.current.weather[0].description,
+			humidity: weatherAPI.current.humidity,
+			latitude: weatherAPI.lat,
+			longitude: weatherAPI.lon,
 		};
 		try {
 			await updateUser(user.userId, userWeather);
@@ -145,8 +151,11 @@ const Weather: React.FC<WeatherProps> = ({ onUserDataUpdate }) => {
 								onChange={handleSelectChange}
 								variant="outlined"
 							>
-								{cityAPI?.map((city, index) => (
-									<MenuItem key={index} value={JSON.stringify(city)}>
+								{cityAPI?.map((city) => (
+									<MenuItem
+										key={`${city.name}-${city.state}-${city.country}`}
+										value={JSON.stringify(city)}
+									>
 										{city.name}, {city.state}, {city.country}
 									</MenuItem>
 								))}

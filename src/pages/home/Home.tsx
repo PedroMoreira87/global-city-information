@@ -34,7 +34,7 @@ const Home = () => {
 
 	useEffect(() => {
 		const fetchUserData = async () => {
-			if (user && user.userId) {
+			if (user?.userId) {
 				try {
 					const userData = await getUser(user.userId);
 					setUserData(userData);
@@ -53,9 +53,11 @@ const Home = () => {
 	const lastFiveWeather = useMemo(() => {
 		const weatherData = userData?.weather || [];
 		return [...weatherData]
+			.filter((item) => item.created_at)
 			.sort(
 				(a, b) =>
-					new Date(a.created_at!).getTime() - new Date(b.created_at!).getTime(),
+					new Date(a.created_at ?? 0).getTime() -
+					new Date(b.created_at ?? 0).getTime(),
 			)
 			.slice(-5);
 	}, [userData?.weather]);
@@ -94,9 +96,13 @@ const Home = () => {
 								</TableRow>
 							</TableHead>
 							<TableBody>
-								{lastFiveWeather?.map((row, index) => (
+								{lastFiveWeather?.map((row) => (
 									<TableRow
-										key={index}
+										key={
+											row.created_at
+												? row.created_at.toString()
+												: `${row.place.city}-${row.place.state}-${row.place.country}`
+										}
 										sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
 									>
 										<TableCell component="th" scope="row">
@@ -111,7 +117,9 @@ const Home = () => {
 										<TableCell align="right">{row.latitude}</TableCell>
 										<TableCell align="right">{row.longitude}</TableCell>
 										<TableCell align="right">
-											{new Date(row.created_at!).toISOString().split("T")[0]}
+											{row.created_at
+												? new Date(row.created_at).toISOString().split("T")[0]
+												: ""}
 										</TableCell>
 									</TableRow>
 								))}
