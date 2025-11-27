@@ -1,5 +1,4 @@
 import axios from "axios";
-
 import type { IWeather } from "../interfaces/user.interface.ts";
 
 export const geolocation = async (cityInput: string) => {

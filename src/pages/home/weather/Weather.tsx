@@ -12,7 +12,6 @@ import {
 import type React from "react";
 import { useState } from "react";
 import toast from "react-hot-toast";
-
 import {
 	geolocation,
 	getUser,

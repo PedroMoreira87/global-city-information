@@ -12,11 +12,10 @@ import {
 import { signOut } from "aws-amplify/auth";
 import { useEffect, useMemo, useState } from "react";
 import toast from "react-hot-toast";
-
 import { getUser } from "../../apis/aws-lambda-functions.ts";
 import type { User } from "../../interfaces/user.interface.ts";
-import "./Home.scss";
 import Weather from "./weather/Weather.tsx";
+import "./Home.scss";
 
 const Home = () => {
 	const { user } = useAuthenticator();

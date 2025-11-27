@@ -1,5 +1,4 @@
 import { GoogleMap, LoadScript, Marker } from "@react-google-maps/api";
-
 import "./MapWithGeocoding.scss";
 
 const GoogleMapsAPIKey = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
