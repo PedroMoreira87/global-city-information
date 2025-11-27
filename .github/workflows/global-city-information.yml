@@ -29,8 +29,13 @@ jobs:
       - name: Install Dependencies
         run: bun install
 
-      - name: Run ESLint
-        run: bun run eslint
+      - name: Setup Biome
+        uses: biomejs/setup-biome@v2
+        with:
+          version: latest
+
+      - name: Run Biome
+        run: biome ci .
 
       - name: Build Project
         env:
@@ -65,8 +70,13 @@ jobs:
       - name: Install Dependencies
         run: bun install
 
-      - name: Run ESLint
-        run: bun run eslint
+      - name: Setup Biome
+        uses: biomejs/setup-biome@v2
+        with:
+          version: latest
+
+      - name: Run Biome
+        run: biome ci .
 
       - name: Build Project
         env:
@@ -107,8 +117,13 @@ jobs:
       - name: Install Dependencies
         run: bun install
 
-      - name: Run ESLint
-        run: bun run eslint
+      - name: Setup Biome
+        uses: biomejs/setup-biome@v2
+        with:
+          version: latest
+
+      - name: Run Biome
+        run: biome ci .
 
       - name: Create .env.production file
         run: |
